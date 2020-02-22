@@ -11,7 +11,7 @@ $domain = \app\super\Server::getDomain();
     <div class="modal-content">
       <div class="modal-header">
         <div class="d-flex flex-row justify-content-center w-100 ml-4"><h2 class="modal-title text-dark" id="exampleModalLabel">Manage Cart</h2></div>
-        <button type="button" class="close" onclick="clearCart();" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" onclick="cart.clearCart();" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -19,12 +19,12 @@ $domain = \app\super\Server::getDomain();
         <div id="displayCartItems" class="row justify-content-around">
             <div class="d-flex flex-column modalItem">
                 <img src="resources/assets/images/apple.jpg"/>
-                <button class="btn btn-danger text-white btn-block" onclick="addToCart(0.3);cost();">Remove from cart</button>
+                <button class="btn btn-danger text-white btn-block" onclick="cart.addToCart(0.3);cart.displayPrice();">Remove from cart</button>
             </div>
         </div>
       </div>
       <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-lg btn-danger" onclick="removeAll();">Remove all</button>
+        <button type="button" class="btn btn-lg btn-danger" onclick="cart.removeAll();">Remove all</button>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ $domain = \app\super\Server::getDomain();
 <div class="container-fluid d-flex flex-column fill-height col-12 justify-content-center">
     <div class="row justify-content-around">
         <div class="d-flex flex-column item">
-            <button class="btn btn-primary btn-block" onclick="addToCart(0.3);cost();">Add to cart</button>
+            <button class="btn btn-primary btn-block" onclick="cart.addToCart(0.3);cart.displayPrice();">Add to cart</button>
             <img src="resources/assets/images/apple.jpg"/>
             <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$0.3<span></div>
             <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span>5</span></div>
@@ -43,7 +43,7 @@ $domain = \app\super\Server::getDomain();
             <div class="row no-gutters justify-content-around pt-1 pb-2 myRate"><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i></div>
         </div>
         <div class="d-flex flex-column item">
-            <button class="btn btn-primary btn-block" onclick="addToCart(1);cost();">Add to cart</button>
+            <button class="btn btn-primary btn-block" onclick="cart.addToCart(0.3);cart.displayPrice();">Add to cart</button>
             <img src="resources/assets/images/water.jpg"/>
             <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$1<span></div>
             <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span>5</span></div>
@@ -51,7 +51,7 @@ $domain = \app\super\Server::getDomain();
             <div class="row no-gutters justify-content-around pt-1 pb-2 myRate"><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i></div>
         </div>
         <div class="d-flex flex-column item">
-            <button class="btn btn-primary btn-block" onclick="addToCart(2);cost();">Add to cart</button>
+            <button class="btn btn-primary btn-block" onclick="cart.addToCart(0.3);cart.displayPrice();">Add to cart</button>
             <img src="resources/assets/images/beer.jpg"/>
             <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$2<span></div>
             <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span>5</span></div>
@@ -59,7 +59,7 @@ $domain = \app\super\Server::getDomain();
             <div class="row no-gutters justify-content-around pt-1 pb-2 myRate"><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i></div>
         </div>
         <div class="d-flex flex-column item">
-            <button class="btn btn-primary btn-block" onclick="addToCart(3.74);cost();">Add to cart</button>
+            <button class="btn btn-primary btn-block" onclick="cart.addToCart(0.3);cart.displayPrice();">Add to cart</button>
             <img src="resources/assets/images/cheese.jpg"/>
             <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$3.74<span></div>
             <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span>5</span></div>
