@@ -1,0 +1,94 @@
+/* upgrade modal.xl */
+@media (min-width: 768px) {
+    .modal-xl {
+         width: 90%;
+         max-width:1200px;
+     }
+}
+
+/* Body and Common classes */
+html, body {
+    height: 100%;
+}
+body {
+    overflow-x: hidden;
+}
+.fill-height {
+    min-height: calc(100% - 74px);
+    height: auto !important; /* cross-browser */
+    height: calc(100% - 74px);; /* cross-browser */
+}
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.borderRounded {
+    border-radius: 5px;
+}
+
+/* Header */
+.nav {
+    background-color: #0099CC;
+}
+.headerItem {
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid white;
+}
+
+/* Web Shop Items */
+.item {
+    border: 1px solid black;
+}
+.item > * {
+    width: 200px;
+}
+.item > button {
+    border-radius: 0;
+    background-color: #007bff;
+}
+.item > button:hover {
+    background-color: #0275d8;
+}
+.item > img {
+    height: 200px;
+    border-bottom: 1px solid black;
+}
+.item > .price {
+    border-bottom: 1px solid black;
+}
+.item > .productRatingContainer {
+    border-bottom: 1px solid black;
+}
+.item > .rateTheProductContainer {
+    border-bottom: 3px solid #f0ad4e;
+    border-bottom-style: dashed;
+}
+.item > .myRate {}
+
+/* Web Shop Modal Items */
+.modalItem {
+    border: 1px solid black;
+}
+.modalItem > * {
+    width: 200px;
+}
+.modalItem > img {
+    height: 200px;
+    border-bottom: 1px solid black;
+}
+.modalItem > button {
+    border-radius: 0;
+    background-color: #dc3545;
+}
+.modalItem > button:hover {
+    background-color: #c82333;
+}
+
+/* Web Shop Transport Types */
+.transportType {}
+tr {
+    text-align: center;
+}
