@@ -7,14 +7,17 @@ final class Session
 {
     // properties
     private static $inst = null;
-    
+
     // Singleton
     public function __construct()
     {
         //start session if it's not already running
         if(session_status() == PHP_SESSION_NONE)
         {
-            session_start();
+            if (!isset($_SESSION))
+            {
+              session_start();
+            }
         }
     }
     public static function session() {
@@ -40,8 +43,8 @@ final class Session
         return $default;
     }
 
-    public static function isSet() {
-        if(array_key_exists("user_id", $_SESSION))
+    public function isSet($key) {
+        if(array_key_exists($key, $_SESSION))
         {
             return true;
         }

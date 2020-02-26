@@ -6,8 +6,9 @@ namespace app\controller;
 // class
 class AjaxController
 {
-    public function getAllFiles()
+    public function validatePurchase()
     {
-        \app\extra\AjaxRequest::getAllFiles();
+        $ajaxModel = new \app\model\AjaxModel();
+        $ajaxModel->validatePurchase();
 	}
 }

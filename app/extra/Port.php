@@ -17,7 +17,7 @@ final class Port
         $pathparts = explode('_', $path);
 
         //set default Controller and Change it if path isn't root (/)
-        $controller = "\app\controller\HomeController";
+        $controller = "\app\controller\WebshopController";
         if(!empty($pathparts[0]))
         {
             $controller = "\app\controller\\". ucfirst($pathparts[0]) . "Controller";
@@ -26,7 +26,7 @@ final class Port
         //set default Method and Change it if path isn't root (/)
         $method = (function ()
         {
-            return 'home';
+            return 'webshop';
         })();
         if(count($pathparts) == 2 && !empty($pathparts[1]))
         {
@@ -52,6 +52,7 @@ final class Port
             // is this AJAX Call? if it is then do NOT load Header
             if(Request::pathInfo() === false || Request::pathInfo() !== false && !strpos(Request::pathInfo(), "ajax") !== false)
             {
+                echo "<script>console.log('this is illegal');</script>";
                 //load Basic HTML
                 \app\layout\LayoutLoader::loadBasicHTML();
 
@@ -64,9 +65,9 @@ final class Port
         }
         else
         {
-        //load Basic HTML
-        \app\layout\LayoutLoader::loadBasicHTML();
-        return \app\extra\ErrorHandler::call404();
+            //load Basic HTML
+            \app\layout\LayoutLoader::loadBasicHTML();
+            return \app\extra\ErrorHandler::call404();
         }
     }
 }

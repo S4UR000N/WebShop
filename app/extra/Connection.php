@@ -16,13 +16,14 @@ final class Connection
     // constructor
     private function __construct()
     {
-        $this->cred = require "../env/conf.php";
+        $this->cred = require BP . "public/env/conf.php";
         $this->con = new PDO("mysql:host=" . $this->cred['SERVER_NAME'] . ";dbname=" . $this->cred['DATABASE_NAME'], $this->cred['USERNAME'], $this->cred['PASSWORD']);
         $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     // singleton
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if(self::$inst === null)
         {
             self::$inst = new self();

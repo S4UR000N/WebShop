@@ -3,32 +3,31 @@
 // namespace
 namespace app\model;
 
-class AjaxModel
+class AjaxModel extends BaseModel
 {
-    public function getAllFiles()
+    public function test()
     {
-        // get Domain
-        $domain = \app\super\Server::getDomain();
+        echo "lol";
+    }
+    public function validatePurchase()
+    {
+        // store $post & $session
+        $post = new \app\super\Post();
+        $session = new \app\super\Session();
 
-        // open DB connection
-        $fileRepo = new \app\repository\FileRepository();
-        $files = $fileRepo->selectAllFiles();
+        // decode front end json
+        $products = json_decode($post->get("products"));
 
         // Output Holder
-        $data = "";
+        $data = 1;
 
-        if($files) {
-            foreach($files as $file) {
-                $data .=
-                    "<tr>" .
-                    "<td>" . $file['file_name'] . "</td>" .
-                    "<td class='preview_file' data-user_id='" . $file['user_id'] . "'" . "data-file_id='" . $file['file_id'] . "'" . "data-file_name='" . $file['file_name'] . "' " . "data-toggle='modal' " . "data-target='#preview_file' " . "><i class='fas fa-eye text-warning'></i></td>" .
-                    "<td><a href='{$domain}/uploads/" . $file['user_id'] . $file['file_name'] . "' download>" . "<div><i class='fas fa-download text-primary'></i></div></a></td>" .
-                    "<td class='preview_info' data-user_name='" . $file['user_name'] . "'" . "data-user_email='" . $file['user_email'] . "'" . "data-toggle='modal' " . "data-target='#preview_info' " . "><div class='info'><i class='fas fa-info-circle text-info'></div></i>" .
-                    "</tr>";
-            }
-            echo $data;
+        if(true)
+        {
+            var_dump($products);
         }
-        else { echo 0; }
+        else
+        {
+            echo 0;
+        }
     }
 }
