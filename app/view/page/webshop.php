@@ -42,6 +42,30 @@ $domain = \app\super\Server::getDomain();
   </div>
 </div>
 
+
+<!-- Bill Modal -->
+<div class="modal fade" id="billModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex flex-row justify-content-center w-100 ml-4"><h2 class="modal-title text-danger" id="exampleModalLabel">Your Bill</h2></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="displayBillProducts" class="row justify-content-around">
+            NO ITEMS
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <span class="">You paid: &nbsp;<span class="text-success">$</span><span id="displayBillPrice" class="text-success"></span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- MODALS.END -->
 
 <div class="container-fluid d-flex flex-column fill-height col-12 justify-content-center">

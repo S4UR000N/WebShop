@@ -281,7 +281,6 @@ var pay =
 	/* Validate everything and return bill or erors: Pay 1.2 */
 	payThePrice: function()
 	{
-		console.log("funds: "+ this.balance);
 		// deny payment if there are no products inside a cart
 		if(cart.isEmpty())
 		{
@@ -301,28 +300,14 @@ var pay =
 		}
 
 		// Calculate the price and send AJAX to reduce balance inside a $_SESSION
-		/* deduct balance - cost
-		*** empty cart
-		**** reset shipping
-		***** send to back-end using AJAX
-		****** validate data:
-		******* return error or update session
-		******** give feedback to user
-		*/
-		// balance stored as ajax data before deductions
-		ajax.balanceBefore = this.balance;
-
-		// deduct balance
-		this.balance = (this.balance - this.totalPrice());
-
-		// balance stored as ajax data after deductions
-		ajax.balanceAfter = this.balance;
-
 		// store shipping price as ajax data
 		ajax.shipping = shipping.shippingPrice();
 
 		// store carted products to ajax data
 		ajax.products = cart.cartProducts;
+
+		// deduct balance
+		this.balance = (this.balance - this.totalPrice());
 
 		// return cart to starting state
 		cart.cartProducts = [];
@@ -332,6 +317,60 @@ var pay =
 
 		// send all data to back-end for validation
 		ajax.validatePurchase();
+	},
+
+
+	/* Insert Bill Products: Pay 1.3 */
+	insertBillProducts: function(products)
+	{
+		// content container
+		var content = "";
+
+		// create items's html and store them inside var content
+		for(i in products)
+		{
+			// append product to the content
+			content +=
+			`
+			<div class="d-flex flex-column modalItem mt-3 mb-4">
+				<img src="${products[i].url}"/>
+				<div class="productName">${products[i].name}</div>
+			</div>
+			`;
+		}
+
+		// append content to modal
+		$("#displayBillProducts").html(content);
+	},
+
+
+	/* Insert Bill Price: Pay 1.4 */
+	insertBillPrice: function(price)
+	{
+		price = this.roundToTwoDecimals(price);
+		$("#displayBillPrice").html(price);
+	},
+
+
+	/* Display Bill: Pay 1.5 */
+	displayBill: function()
+	{
+		$('#billModal').modal('show');
+	},
+
+
+	/* Display Balance: Pay 1.6 */
+	displayBalance: function()
+	{
+		this.balance = this.roundToTwoDecimals(this.balance);
+		$("#insertBalance").html(this.balance);
+	},
+
+
+	/* Fix floating numbers: Pay 1.7 */
+	roundToTwoDecimals: function(num)
+	{
+		return Number.parseFloat(num).toFixed(2);
 	}
 };
 
@@ -342,11 +381,10 @@ var pay =
 var ajax =
 {
 	// store ajax data here
-	balanceBefore: 0,
-	balanceAfter: 0,
+	csrfToken: 0,
+
 	shipping: 0,
 	products: 0,
-	csrfToken: 0,
 
 
 	/* Validate purchase: Ajax 1 */
@@ -358,22 +396,40 @@ var ajax =
 	        type: 'POST',
 	        data:
 			{
-				balanceBefore: ajax.balanceBefore,
-				balanceAfter: ajax.balanceAfter,
+				csrfToken: ajax.csrfToken,
+
 				shipping: ajax.shipping,
-				products: JSON.stringify(ajax.products),
-				csrfToken: ajax.csrfToken
+				products: JSON.stringify(ajax.products)
 			},
 	        success: function(data)
 			{
-	            if(data == 0)
+				// parse json data
+				data = JSON.parse(data);
+
+				// if there is error display it
+				if(!data.error === "")
 				{
-					console.log("ajax fail");
+					alert(data.error);
 				}
-	            else {
-					console.log("ajax success");
-					console.log(data);
-	            }
+				else
+				{
+					// set new balance and display it
+
+					pay.balance = data.balance;
+					pay.displayBalance();
+
+					$("#insertCost").html(0);
+
+
+					console.log(data.products);
+
+					// push bill data to bill
+					pay.insertBillProducts(data.products);
+					pay.insertBillPrice(data.price);
+
+					// display bill
+					pay.displayBill();
+				}
 	        }
 	    });
 	},
@@ -389,7 +445,7 @@ var ajax =
 $(document).ready(function()
 {
 	// insert balance
-	$("#insertBalance").html(pay.balance);
+	pay.displayBalance();
 
 	// display products
 	product.displayProducts();
