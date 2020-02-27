@@ -32,6 +32,16 @@ final class Post
         return $default;
     }
 
+    // check if value exists
+    public function isSet($key) {
+        if(array_key_exists($key, $_POST))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    // return $_POST superglobal array
     public function getPost()
     {
         return $_POST;

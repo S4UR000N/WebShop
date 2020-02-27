@@ -40,6 +40,7 @@ final class Session
         return $default;
     }
 
+    // check if value exists
     public function isSet($key) {
         if(array_key_exists($key, $_SESSION))
         {

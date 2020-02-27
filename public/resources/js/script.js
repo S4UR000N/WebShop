@@ -1,3 +1,13 @@
+/* Security */
+var security =
+{
+	// load csrf token
+	token: loadToken,
+}
+
+
+
+
 /* Web Shop products */
 var product =
 {
@@ -381,8 +391,6 @@ var pay =
 var ajax =
 {
 	// store ajax data here
-	csrfToken: 0,
-
 	shipping: 0,
 	products: 0,
 
@@ -396,7 +404,7 @@ var ajax =
 	        type: 'POST',
 	        data:
 			{
-				csrfToken: ajax.csrfToken,
+				token: security.token,
 
 				shipping: ajax.shipping,
 				products: JSON.stringify(ajax.products)
@@ -407,21 +415,18 @@ var ajax =
 				data = JSON.parse(data);
 
 				// if there is error display it
-				if(!data.error === "")
+				if(!data.error == "")
 				{
 					alert(data.error);
 				}
 				else
 				{
 					// set new balance and display it
-
 					pay.balance = data.balance;
 					pay.displayBalance();
 
+					// reset cost to 0
 					$("#insertCost").html(0);
-
-
-					console.log(data.products);
 
 					// push bill data to bill
 					pay.insertBillProducts(data.products);

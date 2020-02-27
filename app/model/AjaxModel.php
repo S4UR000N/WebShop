@@ -12,7 +12,7 @@ class AjaxModel extends BaseModel
         $session = new \app\super\Session();
 
         // get front end data
-        $csrfToken = $post->get("csrfToken");
+        $token = $post->get("token");
 
         $products = json_decode($post->get("products"));
         $shipping = $post->get("shipping");
@@ -21,7 +21,18 @@ class AjaxModel extends BaseModel
         // error holder
         $error = "";
 
-        // validate CSRF
+        // validate CSRF Token
+        if(!$post->isSet("token"))
+        {
+            $error = "Invalid Request!";
+        }
+        else
+        {
+            if(!hash_equals($session->get("token"), $post->get("token")))
+            {
+                $error = "Invalid Request!";
+            }
+        }
 
         // validate shipping
         $shippingMethods =

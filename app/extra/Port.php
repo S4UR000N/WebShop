@@ -52,7 +52,6 @@ final class Port
             // is this AJAX Call? if it is then do NOT load Header
             if(Request::pathInfo() === false || Request::pathInfo() !== false && !strpos(Request::pathInfo(), "ajax") !== false)
             {
-                echo "<script>console.log('this is illegal');</script>";
                 //load Basic HTML
                 \app\layout\LayoutLoader::loadBasicHTML();
 

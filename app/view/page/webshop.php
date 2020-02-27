@@ -3,9 +3,10 @@
 $domain = \app\super\Server::getDomain();
 ?>
 
-<!-- Load Domain, Balance and Webshop Products -->
+<!-- Load Domain, CSRF Token, Balance and Webshop Products -->
 <script>
     loadDomain = "<?php echo $domain; ?>";
+    loadToken = "<?php echo $viewData["token"]; ?>";
     loadBalance = <?php echo $viewData["balance"]; ?>;
     loadProducts = <?php echo $viewData["products"]; ?>;
 </script>

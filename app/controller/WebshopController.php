@@ -14,6 +14,12 @@ class WebshopController extends BaseController
         $session = new \app\super\Session();
         $webshopModel = new \app\model\WebshopModel();
 
+        // set csrf token
+        if(!$session->isSet("token"))
+        {
+            $session->set("token", bin2hex(random_bytes(32)));
+        }
+
         // set balance and get products from DB
         if(!$session->isSet("balance"))
         {
@@ -21,7 +27,8 @@ class WebshopController extends BaseController
         }
         $products = $webshopModel->getAllProductsAsJSON();
 
-        // store balance and products as $viewData
+        // store token, balance and products as $viewData
+        $this->viewData["token"] = $session->get("token");
         $this->viewData["balance"] = $session->get("balance");
         $this->viewData["products"] = $products;
 
