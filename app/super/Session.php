@@ -14,10 +14,7 @@ final class Session
         //start session if it's not already running
         if(session_status() == PHP_SESSION_NONE)
         {
-            if (!isset($_SESSION))
-            {
-              session_start();
-            }
+            session_start();
         }
     }
     public static function session() {

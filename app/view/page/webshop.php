@@ -48,7 +48,7 @@ $domain = \app\super\Server::getDomain();
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="d-flex flex-row justify-content-center w-100 ml-4"><h2 class="modal-title text-danger" id="exampleModalLabel">Your Bill</h2></div>
+        <div class="d-flex flex-row justify-content-center w-100 ml-4"><h2 class="modal-title text-dark" id="exampleModalLabel">Your Bill</h2></div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -59,7 +59,7 @@ $domain = \app\super\Server::getDomain();
         </div>
       </div>
       <div class="modal-footer justify-content-center">
-        <span class="">You paid: &nbsp;<span class="text-success">$</span><span id="displayBillPrice" class="text-success"></span></span>
+        <span class="text-dark">You paid: &nbsp;<span class="text-success">$</span><span id="displayBillPrice" class="text-success"></span></span>
       </div>
     </div>
   </div>

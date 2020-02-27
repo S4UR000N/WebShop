@@ -120,6 +120,17 @@ body
 {
     background-color: #c82333;
 }
+.modalItem > .productName
+{
+    text-align: center;
+    font-size: 17px;
+    color: white;
+    background-color: #292b2c;
+}
+#billModal .modal-footer span
+{
+    font-size: 20px;
+}
 
 
 
