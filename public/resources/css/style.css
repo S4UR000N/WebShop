@@ -93,6 +93,14 @@ body
     border-bottom-style: dashed;
 }
 .item > .myRate {}
+.item > .myRate > .colorThisStar
+{
+    color: red;
+}
+.item > .myRate > .colorThisStar ~ .star
+{
+    color: red;
+}
 
 
 

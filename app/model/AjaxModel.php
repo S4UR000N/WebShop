@@ -117,4 +117,81 @@ class AjaxModel extends BaseModel
         // Return Data
         echo json_encode($data);
     }
+
+    public function validateVote()
+    {
+        // store $post & $session
+        $post = new \app\super\Post();
+        $session = new \app\super\Session();
+
+        // get front end data
+        $token = $post->get("token");
+
+        $productID = $post->get("productID");
+        $rating = $post->get("rating");
+
+        /* Validate Data */
+        // error holder
+        $error = "";
+
+        // validate CSRF Token
+        if(!$post->isSet("token"))
+        {
+            $error = "Invalid Request!";
+        }
+        else
+        {
+            if(!hash_equals($session->get("token"), $post->get("token")))
+            {
+                $error = "Invalid Request!";
+            }
+        }
+
+        // validate product and calculate, save new product rating
+        if(empty($error))
+        {
+            // validate product's id or throw an error
+            $productRepo = new \app\repository\ProductRepository();
+            $validProduct = $productRepo->selectProductWhereID($productID);
+            if(!$validProduct)
+            {
+                $error = "Invalid product ID!";
+            }
+            // validate user's vote or throw and error
+            else
+            {
+                if($rating < 1 && $rating > 5)
+                {
+                    $error = "Invalid Vote!";
+                }
+            }
+
+            // calculate and save new product rating
+            if(empty($error))
+            {
+                $votes_value = $validProduct["votes_value"] + $rating;
+                $votes = $validProduct["votes"] + 1;
+                $rating = $votes_value / $votes;
+
+                // store new data to database
+                $updateSuccessful = $productRepo->updateRatingData($votes, $votes_value, $rating, $productID);
+
+                // if update failed throw error
+                if(!$updateSuccessful)
+                {
+                    $error = "Rating the product failed!";
+                }
+            }
+        }
+
+        // Output Holder
+        $data =
+        [
+            "error" => $error,
+            "rating" => $rating
+        ];
+
+        // Return Data
+        echo json_encode($data);
+    }
 }

@@ -15,7 +15,7 @@ var product =
 	products: loadProducts,
 
 
-	/* Display Products: Products: 1 */
+	/* Display Products: Products 1 */
 	displayProducts: function()
 	{
 		// content container
@@ -27,19 +27,39 @@ var product =
 			// append product to the content
 			content +=
 			`
-			<div class="d-flex flex-column item mt-5">
+			<div class="d-flex flex-column item mt-5" data-id="${this.products[i].id}">
 	            <button class="btn btn-primary btn-block" onclick="cart.addToCart(product.products[${i}]);cart.displayPrice();">Add to cart</button>
 	            <img src="${this.products[i].url}"/>
 	            <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$${this.products[i].price}<span></div>
-	            <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span>${this.products[i].rating}</span></div>
+	            <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span class="insertRating">${pay.roundToTwoDecimals(this.products[i].rating)}</span></div>
 	            <div class="row no-gutters justify-content-around rateTheProductContainer">Rate the product</div>
-	            <div class="row no-gutters justify-content-around pt-1 pb-2 myRate"><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i><i class="far fa-star">&thinsp;</i></div>
+	            <div class="row no-gutters justify-content-around pt-1 pb-2 d-flex flex-row flex-row-reverse myRate">
+			`;
+				// create 5 rating stars
+				for(var j = 5; j > 0; j--)
+				{
+					content +=
+					`
+						<i class="far fa-star star insertMyRating" onclick="product.rateTheProduct(this, ${this.products[i].id}, ${j})">&thinsp;</i>
+					`;
+				}
+			content +=
+			`
+				</div>
 	        </div>
 			`;
 		}
 
 		// append content to modal
 		$("#displayProducts").html(content);
+	},
+
+
+	/* Rate the Product: Products 1.1 */
+	rateTheProduct: function(me, productID, rating)
+	{
+		// validate vote and handle response
+		ajax.validateVote(me, productID, rating);
 	}
 };
 
@@ -440,7 +460,45 @@ var ajax =
 	},
 
 
-	/**/
+	/* Validate user's vote and update product's rating */
+	validateVote: function(me, productID, rating)
+	{
+		$.ajax
+		({
+	        url: loadDomain+'/ajax_validateVote',
+	        type: 'POST',
+	        data:
+			{
+				token: security.token,
+
+				productID: productID,
+				rating: rating
+			},
+	        success: function(data)
+			{
+				// parse json data
+				data = JSON.parse(data);
+
+				// if there is error display it
+				if(!data.error == "")
+				{
+					alert(data.error);
+				}
+				else
+				{
+					// decolor stars from previous rating and color new rating
+					$(me).siblings().removeClass("colorThisStar");
+					$(me).addClass("colorThisStar");
+
+					console.log("almost there");
+					console.log("umm: "+ "[data-id='"+ productID +"']");
+
+					// vote is valid, update data and display it
+					$("[data-id='"+ productID +"'] .insertRating").html(pay.roundToTwoDecimals(data.rating));
+				}
+			}
+	    });
+	}
 };
 
 

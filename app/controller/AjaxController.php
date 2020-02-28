@@ -11,4 +11,10 @@ class AjaxController
         $ajaxModel = new \app\model\AjaxModel();
         $ajaxModel->validatePurchase();
 	}
+
+    public function validateVote()
+    {
+        $ajaxModel = new \app\model\AjaxModel();
+        $ajaxModel->validateVote();
+	}
 }

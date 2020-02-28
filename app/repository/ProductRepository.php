@@ -12,6 +12,20 @@ class ProductRepository extends BaseRepository
 		return $DB;
 	}
 
+	public function selectProductWhereID($id)
+	{
+		$statement = $this->con->prepare("SELECT * FROM products WHERE id = :id");
+
+		$statement->bindParam(':id', $id);
+
+		$result = $statement->execute();
+		if($result)
+		{
+			$result = $statement->fetch(\PDO::FETCH_ASSOC);
+		}
+		return $result;
+	}
+
 	public function selectProductsWhereIDs($IDs)
 	{
 		// build query
@@ -33,4 +47,18 @@ class ProductRepository extends BaseRepository
 		$DB = $this->con->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 		return $DB;
 	}
+
+	public function updateRatingData($votes, $votes_value, $rating, $productID)
+	{
+		$statement = $this->con->prepare("UPDATE products SET votes = :votes, votes_value = :votes_value, rating = :rating WHERE id = :id");
+
+		$statement->bindParam(':votes', $votes);
+		$statement->bindParam(':votes_value', $votes_value);
+		$statement->bindParam(':rating', $rating);
+		$statement->bindParam(':id', $productID);
+
+		$result = $statement->execute();
+		return $result;
+	}
+
 }
