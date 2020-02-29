@@ -20,6 +20,16 @@ class WebshopController extends BaseController
             $session->set("token", bin2hex(random_bytes(32)));
         }
 
+        // set ratings
+        if($session->isSet("rating"))
+        {
+            $ratings = json_encode($session->get("rating"));
+        }
+        else
+        {
+            $ratings = json_encode(false);
+        }
+
         // set balance and get products from DB
         if(!$session->isSet("balance"))
         {
@@ -30,6 +40,7 @@ class WebshopController extends BaseController
         // store token, balance and products as $viewData
         $this->viewData["token"] = $session->get("token");
         $this->viewData["balance"] = $session->get("balance");
+        $this->viewData["ratings"] = $ratings;
         $this->viewData["products"] = $products;
 
         // render view with $viewData attached

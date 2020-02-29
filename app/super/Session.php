@@ -30,12 +30,23 @@ final class Session
     {
         $_SESSION[$key] = $val;
     }
+    public function setRating($key, $val)
+    {
+        $_SESSION["rating"][$key] = $val;
+    }
 
     // Getter
     public function get($key, $default = null)
     {
         if(isset($_SESSION[$key])) {
             return $_SESSION[$key];
+        }
+        return $default;
+    }
+    public function getRating($key, $default = null)
+    {
+        if(isset($_SESSION["rating"][$key])) {
+            return $_SESSION["rating"][$key];
         }
         return $default;
     }

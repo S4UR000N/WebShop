@@ -14,6 +14,9 @@ var product =
 	// webshop products got from database
 	products: loadProducts,
 
+	// load current user's ratings
+	ratings: loadRatings,
+
 
 	/* Display Products: Products 1 */
 	displayProducts: function()
@@ -35,12 +38,27 @@ var product =
 	            <div class="row no-gutters justify-content-around rateTheProductContainer">Rate the product</div>
 	            <div class="row no-gutters justify-content-around pt-1 pb-2 d-flex flex-row flex-row-reverse myRate">
 			`;
+
+				// if user rated this product color the stars
+				var colorTheStars = "";
+
+				// check if user ratings exist
+				if(this.ratings)
+				{
+					// check if this is rated product
+					if(this.products[i].id in this.ratings)
+					{
+						colorTheStars = "colorThisStar";
+					}
+				}
+
 				// create 5 rating stars
 				for(var j = 5; j > 0; j--)
 				{
+					// create stars and color if needed
 					content +=
 					`
-						<i class="far fa-star star insertMyRating" onclick="product.rateTheProduct(this, ${this.products[i].id}, ${j})">&thinsp;</i>
+						<i class="far fa-star star insertMyRating ${(this.ratings[this.products[i].id] == j) ? colorTheStars : ''}" onclick="product.rateTheProduct(this, ${this.products[i].id}, ${j})">&thinsp;</i>
 					`;
 				}
 			content +=
@@ -472,7 +490,9 @@ var ajax =
 				token: security.token,
 
 				productID: productID,
-				rating: rating
+				rating: rating,
+
+				ratings: JSON.stringify(product.ratings)
 			},
 	        success: function(data)
 			{
@@ -486,15 +506,13 @@ var ajax =
 				}
 				else
 				{
+					// vote is valid, update data and display it
+					product.ratings[productID] = rating;
+					$("[data-id='"+ productID +"'] .insertRating").html(pay.roundToTwoDecimals(data.rating));
+
 					// decolor stars from previous rating and color new rating
 					$(me).siblings().removeClass("colorThisStar");
 					$(me).addClass("colorThisStar");
-
-					console.log("almost there");
-					console.log("umm: "+ "[data-id='"+ productID +"']");
-
-					// vote is valid, update data and display it
-					$("[data-id='"+ productID +"'] .insertRating").html(pay.roundToTwoDecimals(data.rating));
 				}
 			}
 	    });

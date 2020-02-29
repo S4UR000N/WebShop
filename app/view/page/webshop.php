@@ -8,6 +8,7 @@ $domain = \app\super\Server::getDomain();
     loadDomain = "<?php echo $domain; ?>";
     loadToken = "<?php echo $viewData["token"]; ?>";
     loadBalance = <?php echo $viewData["balance"]; ?>;
+    loadRatings = <?php echo $viewData["ratings"]; ?>; 
     loadProducts = <?php echo $viewData["products"]; ?>;
 </script>
 

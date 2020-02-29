@@ -129,6 +129,7 @@ class AjaxModel extends BaseModel
 
         $productID = $post->get("productID");
         $rating = $post->get("rating");
+        $ratings = json_decode($post->get("ratings"), true);
 
         /* Validate Data */
         // error holder
@@ -171,6 +172,21 @@ class AjaxModel extends BaseModel
             {
                 $votes_value = $validProduct["votes_value"] + $rating;
                 $votes = $validProduct["votes"] + 1;
+
+                // check if user aleready rated this product
+                if($ratings)
+                {
+                    if(array_key_exists($productID, $ratings))
+                    {
+                        $votes_value = $validProduct["votes_value"] + $rating - $ratings[$productID];
+                        $votes = $validProduct["votes"];
+                    }
+                }
+
+                // store rating to session
+                $session->setRating($productID, $rating);
+
+                // calculate new rating
                 $rating = $votes_value / $votes;
 
                 // store new data to database
