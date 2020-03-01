@@ -8,7 +8,7 @@ $domain = \app\super\Server::getDomain();
     loadDomain = "<?php echo $domain; ?>";
     loadToken = "<?php echo $viewData["token"]; ?>";
     loadBalance = <?php echo $viewData["balance"]; ?>;
-    loadRatings = <?php echo $viewData["ratings"]; ?>; 
+    loadRatings = <?php echo $viewData["ratings"]; ?>;
     loadProducts = <?php echo $viewData["products"]; ?>;
 </script>
 
@@ -70,6 +70,8 @@ $domain = \app\super\Server::getDomain();
 
 <!-- MODALS.END -->
 
+
+<!-- Products and Transport types -->
 <div class="container-fluid d-flex flex-column fill-height col-12 justify-content-center">
     <div id="displayProducts" class="row justify-content-around">
     </div>

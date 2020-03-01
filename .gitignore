@@ -2,4 +2,3 @@
 .idea/
 env/conf.php
 public/.htaccess
-app/Connection.php

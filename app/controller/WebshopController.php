@@ -15,26 +15,15 @@ class WebshopController extends BaseController
         $webshopModel = new \app\model\WebshopModel();
 
         // set csrf token
-        if(!$session->isSet("token"))
-        {
-            $session->set("token", bin2hex(random_bytes(32)));
-        }
+        $webshopModel->setCSRFtoken();
 
         // set ratings
-        if($session->isSet("rating"))
-        {
-            $ratings = json_encode($session->get("rating"));
-        }
-        else
-        {
-            $ratings = json_encode(false);
-        }
+        $webshopModel->setRatings();
 
-        // set balance and get products from DB
-        if(!$session->isSet("balance"))
-        {
-            $session->set("balance", "100");
-        }
+        // set balance
+        $webshopModel->setBalance();
+
+        // get products from DB
         $products = $webshopModel->getAllProductsAsJSON();
 
         // store token, balance and products as $viewData
