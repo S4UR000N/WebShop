@@ -43,7 +43,7 @@ var product =
 				var colorTheStars = "";
 
 				// check if user ratings exist
-				if(this.ratings)
+				if(this.ratings.length > 0)
 				{
 					// check if this is rated product
 					if(this.products[i].id in this.ratings)
@@ -438,7 +438,7 @@ var ajax =
 	{
 		$.ajax
 		({
-	        url: loadDomain+'/ajax_validatePurchase',
+	        url: loadDomain+'app/ajax/validatePurchase.php',
 	        type: 'POST',
 	        data:
 			{
@@ -483,7 +483,7 @@ var ajax =
 	{
 		$.ajax
 		({
-	        url: loadDomain+'/ajax_validateVote',
+	        url: loadDomain+'app/ajax/validateVote.php',
 	        type: 'POST',
 	        data:
 			{
@@ -498,6 +498,7 @@ var ajax =
 			{
 				// parse json data
 				data = JSON.parse(data);
+				console.log(data);
 
 				// if there is error display it
 				if(!data.error == "")

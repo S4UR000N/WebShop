@@ -174,7 +174,7 @@ class AjaxModel extends BaseModel
                 $votes = $validProduct["votes"] + 1;
 
                 // check if user aleready rated this product
-                if($ratings)
+                if(!empty($ratings))
                 {
                     if(array_key_exists($productID, $ratings))
                     {
@@ -182,9 +182,9 @@ class AjaxModel extends BaseModel
                         $votes = $validProduct["votes"];
                     }
                 }
-
-                // store rating to session
+                // store rating to session$ratings
                 $session->setRating($productID, $rating);
+                $get = $session->get("rating");
 
                 // calculate new rating
                 $rating = $votes_value / $votes;
@@ -204,10 +204,14 @@ class AjaxModel extends BaseModel
         $data =
         [
             "error" => $error,
+            "session" => json_encode($_SESSION),
+            "get" => json_encode($get),
+            "ratings" => json_encode($ratings),
             "rating" => $rating
         ];
 
         // Return Data
         echo json_encode($data);
+
     }
 }

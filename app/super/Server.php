@@ -45,6 +45,6 @@ final class Server
 
     public static function getDomain()
     {
-       return $domain = self::getProtocol() . "://" . self::getHost();
+       return $domain = self::getProtocol() . "://" . self::getHost() . "/";
     }
 }

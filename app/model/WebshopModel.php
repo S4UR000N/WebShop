@@ -5,7 +5,7 @@ namespace app\model;
 
 class WebshopModel extends BaseModel
 {
-    public function setCSRFtoken()
+    public function setCSRFtoken($session)
     {
         if(!$session->isSet("token"))
         {
@@ -13,18 +13,18 @@ class WebshopModel extends BaseModel
         }
     }
 
-    public function setRatings() {
+    public function setRatings($session) {
         if($session->isSet("rating"))
         {
-            $ratings = json_encode($session->get("rating"));
+            return json_encode($session->get("rating"));
         }
         else
         {
-            $ratings = json_encode(false);
+            return json_encode([]);
         }
     }
 
-    public function setBalance()
+    public function setBalance($session)
     {
         if(!$session->isSet("balance"))
         {

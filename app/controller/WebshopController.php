@@ -15,13 +15,13 @@ class WebshopController extends BaseController
         $webshopModel = new \app\model\WebshopModel();
 
         // set csrf token
-        $webshopModel->setCSRFtoken();
+        $webshopModel->setCSRFtoken($session);
 
         // set ratings
-        $webshopModel->setRatings();
+        $ratings = $webshopModel->setRatings($session);
 
         // set balance
-        $webshopModel->setBalance();
+        $webshopModel->setBalance($session);
 
         // get products from DB
         $products = $webshopModel->getAllProductsAsJSON();
