@@ -1,0 +1,583 @@
+/* Security */
+var security =
+{
+	// load csrf token
+	token: loadToken,
+}
+
+
+
+
+/* Web Shop products */
+var product =
+{
+	// webshop products got from database
+	products: loadProducts,
+
+	// load current user's ratings
+	ratings: loadRatings,
+
+
+	/* Display Products: Products 1 */
+	displayProducts: function()
+	{
+		// content container
+		var content = "";
+
+		// create products's html and store them inside var content
+		for(i in this.products)
+		{
+			// append product to the content
+			content +=
+			`
+			<div class="d-flex flex-column item mt-5" data-id="${this.products[i].id}">
+	            <button class="btn btn-primary btn-block" onclick="cart.addToCart(this.parentElement, product.products[${i}]);cart.displayPrice();">Add to cart</button>
+				<input id="testinput" type="number" min="0" step="1" placeholder="enter number of items"/>
+	            <img src="${this.products[i].url}"/>
+	            <div class="row no-gutters justify-content-center price">Price: <span class="text-success">&nbsp;$${this.products[i].price}<span></div>
+	            <div class="row no-gutters justify-content-center productRatingContainer">Product Rating: &nbsp;<span class="insertRating">${pay.roundToTwoDecimals(this.products[i].rating)}</span></div>
+	            <div class="row no-gutters justify-content-around rateTheProductContainer">Rate the product</div>
+	            <div class="row no-gutters justify-content-around pt-1 pb-2 d-flex flex-row flex-row-reverse myRate">
+			`;
+
+				// if user rated this product color the stars
+				var colorTheStars = "";
+
+				// check if user ratings exist
+				if(this.ratings)
+				{
+					// check if this is rated product
+					if(this.products[i].id in this.ratings)
+					{
+						colorTheStars = "colorThisStar";
+					}
+				}
+
+				// create 5 rating stars
+				for(var j = 5; j > 0; j--)
+				{
+					// create stars and color if needed
+					content +=
+					`
+						<i class="far fa-star star insertMyRating ${(this.ratings[this.products[i].id] == j) ? colorTheStars : ''}" onclick="product.rateTheProduct(this, ${this.products[i].id}, ${j})">&thinsp;</i>
+					`;
+				}
+			content +=
+			`
+				</div>
+	        </div>
+			`;
+		}
+
+		// append content to modal
+		$("#displayProducts").html(content);
+	},
+
+
+	/* Rate the Product: Products 1.1 */
+	rateTheProduct: function(me, productID, rating)
+	{
+		// validate vote and handle response
+		ajax.validateVote(me, productID, rating);
+	}
+};
+
+
+
+
+/* CART */
+var cart =
+{
+	// cart products holder
+	cartProducts: [],
+
+	// check if cart is empty
+	isEmpty: function()
+	{
+		if(!this.cartProducts.length > 0)
+		{
+			return true;
+		}
+		return false;
+	},
+
+	/* Add item's price to cart: Cart 1.1 */
+	addToCart: function(me, obj)
+	{
+		// get value of added quantity
+		var count = $(me).children("input").eq(0).val();
+
+		// check if count is defined
+		if(count === "" || count < 1)
+		{
+			return;
+		}
+
+		// if product is aleready in the cart just update data
+		for(i in this.cartProducts)
+		{
+			if(this.cartProducts[i].obj.id == obj.id)
+			{
+				return this.cartProducts[i].count = (parseInt(this.cartProducts[i].count) + parseInt(count));
+			}
+		}
+		// else add new object to array
+		return this.cartProducts.push({
+			obj: obj,
+			count: count
+		});
+	},
+
+
+	/* Remove product from cart: Cart 1.2 */
+	removeFromCart: function(me, productID)
+	{
+		// get value of removed quantity
+		var count = $(me).children("input").eq(0).val();
+
+		// check if count is defined
+		if(count === "" || count < 1)
+		{
+			return;
+		}
+		
+		// remove product from cart array
+		for(i in this.cartProducts)
+		{
+			if(this.cartProducts[i].obj.id == productID)
+			{
+				this.cartProducts[i].count = (parseInt(this.cartProducts[i].count) - parseInt(count));
+
+				// if number is positive display new count
+				if(parseInt(this.cartProducts[i].count) > 0)
+				{
+					$(me).children(".insertCount").html(this.cartProducts[i].count);
+				}
+
+				// if number is negative set to zero
+				if(parseInt(this.cartProducts[i].count) < 0)
+				{
+					this.cartProducts[i].count = 0;
+				}
+
+				// if count is zero then remove the product
+				if(parseInt(this.cartProducts[i].count) === 0)
+				{
+					me.remove();
+				}
+			}
+		}
+	},
+
+
+	/* Calculate price of cart items: Cart 2.1 */
+	returnPrice: function()
+	{
+		var price = 0;
+		for(i in this.cartProducts)
+		{
+			price += parseFloat(this.cartProducts[i].obj.price * this.cartProducts[i].count);
+		}
+
+		return Math.round((price + Number.EPSILON) * 100) / 100; // round to 2 decimal places
+	},
+
+
+	/* Calculate and Display price of items: Cart 2.2 */
+	displayPrice: function()
+	{
+		$("#insertCost").html((this.returnPrice() + shipping.shippingPrice()));
+	},
+
+
+	/* Display Cart Items: Cart 3.1 */
+	displayCartProducts: function()
+	{
+		// content container
+		var content = "";
+
+		// create items's html and store them inside var content
+		for(i in this.cartProducts)
+		{
+			// append product to the content
+			content +=
+			`
+			<div class="d-flex flex-column modalItem mt-3 mb-4">
+				<div class="count">Count</div>
+				<div class="insertCount">${this.cartProducts[i].count}</div>
+				<img src="${this.cartProducts[i].obj.url}"/>
+				<input type="number" min="0" step="1" placeholder="enter number of items"/>
+				<button class="btn btn-danger text-white btn-block" onclick="cart.removeFromCart(this.parentElement, ${this.cartProducts[i].obj.id});cart.displayPrice();">Remove from cart</button>
+			</div>
+			`;
+		}
+
+		// append content to modal
+		$("#displayCartProducts").html(content);
+	},
+
+
+	/* Clear Cart: Cart 3.2 */
+	clearCart: function()
+	{
+		$("#displayCartProducts").html("");
+	},
+
+
+	/* Remove All: Cart 3.1 */
+	removeAll: function()
+	{
+		this.clearCart();
+		this.cartProducts = [];
+		this.displayPrice();
+	},
+};
+
+
+
+
+/* Shipping */
+var shipping =
+{
+	// shipping method
+	method: null,
+
+
+	/* Check if shipping Method is set: Shipping 1 */
+	shippingIsSet: function()
+	{
+		if(this.method)
+		{
+			return true;
+		}
+		return false;
+	},
+
+
+	/* Check if shipping Method is Pick Up: Shipping 1.1 */
+	shippingIsPU: function()
+	{
+		if(this.method === 'PU')
+		{
+			return true;
+		}
+		return false;
+	},
+
+
+	/* Check if shipping Method is United Parcel Service: Shipping 1.2 */
+	shippingIsUPS: function()
+	{
+		if(this.method === 'UPS')
+		{
+			return true;
+		}
+		return false;
+	},
+
+
+	/* Change shipping method to Pick Up: Shipping 2.1 */
+	choosePU: function(me)
+	{
+		// if this shipping method is aleready selected stop
+		if(this.shippingIsPU())
+		{
+			return;
+		}
+
+		// if other shipping method is set remove it
+		if(this.shippingIsUPS())
+		{
+			$("#UPS").removeClass("isSet bg-success");
+		}
+
+		// set new shipping method
+		me.className += " isSet bg-success";
+		this.method = "PU";
+	},
+
+
+	/* Change shipping method to United Parcel Service: Shipping 2.2 */
+	chooseUPS: function(me)
+	{
+		// if this shipping method is aleready selected stop
+		if(this.shippingIsUPS())
+		{
+			return;
+		}
+
+		// if other shipping method is set remove it
+		if(this.shippingIsPU())
+		{
+			$("#PU").removeClass("isSet bg-success");
+		}
+
+		// set new shipping method
+		me.className += " isSet bg-success";
+		this.method = "UPS";
+	},
+
+
+	/* Return shipping price: Shipping 3 */
+	shippingPrice: function()
+	{
+		// shipping price for PU
+		if(this.shippingIsPU())
+		{
+			return 0;
+		}
+
+		// shipping price for PU
+		if(this.shippingIsUPS())
+		{
+			return 5;
+		}
+
+		// if shipping isn't set return 0
+		return 0;
+	},
+
+
+	/* Return Shipping to starting state */
+	resetShipping: function()
+	{
+		this.method = null;
+		$("#PU").removeClass("isSet bg-success");
+		$("#UPS").removeClass("isSet bg-success");
+	}
+};
+
+
+
+
+/* Payment */
+var pay =
+{
+	// user balance loaded from session
+	balance: loadBalance,
+
+
+	/* Return total price: Pay 1 */
+	totalPrice: function()
+	{
+		return (cart.returnPrice() + shipping.shippingPrice());
+	},
+
+
+	/* Check if user has enough money: Pay 1.1 */
+	hasFunds: function()
+	{
+		if(this.balance > this.totalPrice())
+		{
+			return true;
+		}
+		return false;
+	},
+
+
+	/* Validate everything and return bill or erors: Pay 1.2 */
+	payThePrice: function()
+	{
+		// deny payment if there are no products inside a cart
+		if(cart.isEmpty())
+		{
+			return alert("Please add some products to your cart");
+		}
+
+		// deny payment if shipping isn't set
+		if(!shipping.shippingIsSet())
+		{
+			return alert("Please choose Shipping Method");
+		}
+
+		// deny payment if user has insufficient funds
+		if(!this.hasFunds())
+		{
+			return alert("Insufficient funds");
+		}
+
+		// Calculate the price and send AJAX to reduce balance inside a $_SESSION
+		// store shipping price as ajax data
+		ajax.shipping = shipping.shippingPrice();
+
+		// store carted products to ajax data
+		ajax.products = cart.cartProducts;
+
+		// deduct balance
+		this.balance = (this.balance - this.totalPrice());
+
+		// return cart to starting state
+		cart.cartProducts = [];
+
+		// return shipping to starting state
+		shipping.resetShipping();
+
+		// send all data to back-end for validation
+		ajax.validatePurchase();
+	},
+
+
+	/* Insert Bill Products: Pay 1.3 */
+	insertBillProducts: function(products)
+	{
+		// content container
+		var content = "";
+
+		// create items's html and store them inside var content
+		for(i in products)
+		{
+			// append product to the content
+			content +=
+			`
+			<div class="d-flex flex-column modalItem mt-3 mb-4">
+				<div class="count">Count</div>
+				<div class="insertCount">${products[i].count}</div>
+				<img src="${products[i].url}"/>
+				<div class="productName">${products[i].name}</div>
+			</div>
+			`;
+		}
+
+		// append content to modal
+		$("#displayBillProducts").html(content);
+	},
+
+
+	/* Insert Bill Price: Pay 1.4 */
+	insertBillPrice: function(price)
+	{
+		price = this.roundToTwoDecimals(price);
+		$("#displayBillPrice").html(price);
+	},
+
+
+	/* Display Bill: Pay 1.5 */
+	displayBill: function()
+	{
+		$('#billModal').modal('show');
+	},
+
+
+	/* Display Balance: Pay 1.6 */
+	displayBalance: function()
+	{
+		this.balance = this.roundToTwoDecimals(this.balance);
+		$("#insertBalance").html(this.balance);
+	},
+
+
+	/* Fix floating numbers: Pay 1.7 */
+	roundToTwoDecimals: function(num)
+	{
+		return Number.parseFloat(num).toFixed(2);
+	}
+};
+
+
+
+
+/* AJAX */
+var ajax =
+{
+	// store ajax data here
+	shipping: 0,
+	products: 0,
+
+
+	/* Validate purchase: Ajax 1 */
+	validatePurchase: function()
+	{
+		$.ajax
+		({
+	        url: loadDomain+'app/ajax/validatePurchase.php',
+	        type: 'POST',
+	        data:
+			{
+				token: security.token,
+
+				shipping: ajax.shipping,
+				products: JSON.stringify(ajax.products)
+			},
+	        success: function(data)
+			{
+				// parse json data
+				console.log(data);
+				data = JSON.parse(data);
+
+				// if there is error display it
+				if(!data.error == "")
+				{
+					alert(data.error);
+				}
+				else
+				{
+					// set new balance and display it
+					pay.balance = data.balance;
+					pay.displayBalance();
+
+					// reset cost to 0
+					$("#insertCost").html(0);
+
+					// push bill data to bill
+					pay.insertBillProducts(data.products);
+					pay.insertBillPrice(data.price);
+
+					// display bill
+					pay.displayBill();
+				}
+	        }
+	    });
+	},
+
+
+	/* Validate user's vote and update product's rating */
+	validateVote: function(me, productID, rating)
+	{
+		$.ajax
+		({
+	        url: loadDomain+'app/ajax/validateVote.php',
+	        type: 'POST',
+	        data:
+			{
+				token: security.token,
+
+				productID: productID,
+				rating: rating
+			},
+	        success: function(data)
+			{
+				// parse json data
+				data = JSON.parse(data);
+
+				// if there is error display it
+				if(!data.error == "")
+				{
+					alert(data.error);
+				}
+				else
+				{
+					// vote is valid, update data and display it
+					product.ratings[productID] = rating;
+					$("[data-id='"+ productID +"'] .insertRating").html(pay.roundToTwoDecimals(data.rating));
+
+					// decolor stars from previous rating and color new rating
+					//$(me).siblings().removeClass("colorThisStar");
+					$(me).addClass("colorThisStar");
+				}
+			}
+	    });
+	}
+};
+
+
+
+
+/* Execute */
+$(document).ready(function()
+{
+	// insert balance
+	pay.displayBalance();
+
+	// display products
+	product.displayProducts();
+});
